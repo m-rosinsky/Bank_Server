@@ -2,7 +2,7 @@
 CC=gcc
 
 # Compiler flags.
-CFLAGS=-Wall -Wextra -pednatic -pthread
+CFLAGS=-Wall -Wextra -pedantic -pthread
 
 # Object directory.
 OBJS=objs
@@ -24,6 +24,9 @@ compile: setup
 
 link: setup compile
 	@echo -n "Linking binaries..."
+
+# Link server executable
+	@$(CC) $(CFLAGS) -o ./$(BINS)/server ./source/server/main.c
 
 	@echo "   done"
 

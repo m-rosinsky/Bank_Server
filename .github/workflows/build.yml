@@ -12,7 +12,7 @@ on:
 
 # Jobs to do.
 jobs:
-    job1:
+    Pipeline 1:
 
         # Run Target.
         runs-on: ubuntu-latest
@@ -43,6 +43,7 @@ jobs:
               if: ${{ success() }}
               run: |
                 echo "Running tests"
+                ./bins/server
 
             # Step 5. Run Valgrind
             - name: Valgrind
