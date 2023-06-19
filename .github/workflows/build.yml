@@ -22,7 +22,7 @@ jobs:
 
             # Step 1. Checkout Repo.
             - name: Checkout Repo
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             # Step 2. Install Dependencies
             - name: Install Dependencies
@@ -49,4 +49,3 @@ jobs:
               if: ${{ success() }}
               run: |
                 echo "Running valgrind memory checker"
-                
