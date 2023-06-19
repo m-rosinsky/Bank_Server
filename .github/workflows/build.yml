@@ -50,3 +50,4 @@ jobs:
               if: ${{ success() }}
               run: |
                 echo "Running valgrind memory checker"
+                valgrind --leak-check=full ./bins/server
