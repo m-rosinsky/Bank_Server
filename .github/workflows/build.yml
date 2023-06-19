@@ -12,7 +12,7 @@ on:
 
 # Jobs to do.
 jobs:
-    Pipeline 1:
+    Pipeline_1:
 
         # Run Target.
         runs-on: ubuntu-latest
