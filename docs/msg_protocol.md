@@ -23,70 +23,49 @@ The messages that can be sent from the client to the server are as follows:
 
 ## Client to Server Message Protocol Diagram
 
-| 8 | 32 | 32 | 32 | 64 | 88 |
-| --- | --- | --- | --- | --- | --- |
-| opcode | sid | username | password | amount | padding |
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/cc33e0b1971ba97f10f042602d5cf5a0a2b6f8a3/docs/imgs/msg_request_diagram.png "Request Message") |
+|:--:|
 
 This totals 256 byte messages being sent.
 
 ## Server to Client Message Protocol Diagram
 
-| 8 | 32 | 64 | 24 |
-| --- | --- | --- | --- |
-| response code | sid | amount | padding |
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/cc33e0b1971ba97f10f042602d5cf5a0a2b6f8a3/docs/imgs/msg_response_diagram.png "Response Message") |
+|:--:|
 
 This totals 128 byte messages being sent.
 
 ## User Register
 
-The user_register message is sent when creating a user account.
-
-The message fields are as follows:
-
-- opcode: 0x01
-- sid: N/A
-- username: username provided by client
-- password: password provided by client
-- amount: N/A
-
-The server will respond:
-
-- response code: 0xA0 (success), 0xF1 (user already exists), 0xF2 (password invalid), 0xF3 (database full), 0xFF (generic failure)
-- sid: N/A
-- amount: N/A
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/eacb7cf9933d34f6e2c7aafcdc548cb71dcf1912/docs/imgs/user_register_diagram.png "User Register") |
+|:--:|
 
 ## User Delete
 
-The user_delete message is sent when removing a user account.
-
-The message fields are as follows:
-
-- opcode: 0x02
-- sid: Valid SID
-- username: N/A
-- password: N/A
-- amount: N/A
-
-The server will respond:
-
-- response code: 0xA0 (success), 0xF0 (invalid sid), 0xFF (generic failure)
-- sid: N/A
-- amount: N/A
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/eacb7cf9933d34f6e2c7aafcdc548cb71dcf1912/docs/imgs/user_delete_diagram.png "User Delete") |
+|:--:|
 
 ## User Login
 
-The user_login message is sent when a user attempts to log in to their account.
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/eacb7cf9933d34f6e2c7aafcdc548cb71dcf1912/docs/imgs/user_login_diagram.png "User Login") |
+|:--:|
 
-The message fields are as follows:
+## Account Balance
 
-- opcode: 0x03
-- sid: N/A
-- username: username provided by client
-- password: password provided by client
-- amount: N/A
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/eacb7cf9933d34f6e2c7aafcdc548cb71dcf1912/docs/imgs/account_balance_diagram.png "Account Balance") |
+|:--:|
 
-The server will respond:
+## Account Deposit
 
-- response code: 0xA0 (success), 0xF1 (user not found), 0xF2 (password invalid), 0xFF (generic failure)
-- sid: New generated sid
-- amount: N/A
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/eacb7cf9933d34f6e2c7aafcdc548cb71dcf1912/docs/imgs/account_deposit_diagram.png "Account Deposit") |
+|:--:|
+
+## Account Withdraw
+
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/eacb7cf9933d34f6e2c7aafcdc548cb71dcf1912/docs/imgs/account_withdraw_diagram.png "Account Withdraw") |
+|:--:|
+
+## Account Transfer
+
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/eacb7cf9933d34f6e2c7aafcdc548cb71dcf1912/docs/imgs/account_transfer_diagram.png "Account Transfer") |
+|:--:|
