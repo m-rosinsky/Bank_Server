@@ -23,14 +23,14 @@ The messages that can be sent from the client to the server are as follows:
 
 ## Client to Server Message Protocol Diagram
 
-| ![alt text](https://git.cybbh.space/net/public/-/raw/master/modules/networking/slides/images/student_net_range_blue_only.png "Request Message") |
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/cc33e0b1971ba97f10f042602d5cf5a0a2b6f8a3/docs/imgs/msg_request_diagram.png "Request Message") |
 |:--:|
 
 This totals 256 byte messages being sent.
 
 ## Server to Client Message Protocol Diagram
 
-| ![alt text](https://git.cybbh.space/net/public/-/raw/master/modules/networking/slides/images/student_net_range_blue_only.png "Resonse Message") |
+| ![alt text](https://github.com/m-rosinsky/Bank_Server/blob/cc33e0b1971ba97f10f042602d5cf5a0a2b6f8a3/docs/imgs/msg_response_diagram.png "Response Message") |
 |:--:|
 
 This totals 128 byte messages being sent.
