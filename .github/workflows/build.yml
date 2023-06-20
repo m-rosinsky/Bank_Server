@@ -4,11 +4,7 @@ name: CI/CD Pipeline
 # Build Triggers.
 on:
     push:
-        branches:
-            - main
     pull_request:
-        branches:
-            - main
 
 # Jobs to do.
 jobs:
