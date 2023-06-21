@@ -31,9 +31,9 @@ jobs:
                 
                 git clone https://gitlab.com/cunity/cunit.git
                 cd cunit
-                cmake -H. -Bbuild
-                cmake --build build
-                cmake --install build
+                sudo cmake -H. -Bbuild
+                sudo cmake --build build
+                sudo cmake --install build
 
             # Step 3. Build C project.
             - name: Build
