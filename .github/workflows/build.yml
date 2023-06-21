@@ -38,8 +38,9 @@ jobs:
             # Step 3. Build C project.
             - name: Build
               run: |
-                echo "Building project..."
+                echo "Building server..."
                 make
+                echo "Building test binaries..."
                 make test
 
             # Step 4. Run tests.
