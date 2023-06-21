@@ -27,23 +27,31 @@ jobs:
                 sudo apt-get update
                 sudo apt-get install -y valgrind
                 sudo apt-get install -y make
+                sudo apt-get install -y cmake
+                
+                git clone https://gitlab.com/cunity/cunit.git
+                cd cunit
+                cmake -H. -Bbuild
+                cmake --build build
+                cmake --install build
 
             # Step 3. Build C project.
             - name: Build
               run: |
                 echo "Building project..."
                 make
+                make tests
 
             # Step 4. Run tests.
             - name: Test
               if: ${{ success() }}
               run: |
                 echo "Running tests"
-                ./bins/server
+                ./bins/test_queue
 
             # Step 5. Run Valgrind
             - name: Valgrind
               if: ${{ success() }}
               run: |
                 echo "Running valgrind memory checker"
-                valgrind --leak-check=full ./bins/server
+                valgrind --leak-check=full ./bins/test_queue
