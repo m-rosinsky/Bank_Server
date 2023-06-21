@@ -20,16 +20,24 @@ setup:
 compile: setup
 	@echo -n "Compiling sources..."
 	
+# Compile common sources.
+	@$(CC) $(CFLAGS) -o ./$(OBJS)/queue.o -c ./source/common/queue.c
+
 	@echo "   done"
 
 link: setup compile
 	@echo -n "Linking binaries..."
 
 # Link server executable.
-	@$(CC) $(CFLAGS) -o ./$(BINS)/server ./source/server/main.c
+	@$(CC) $(CFLAGS) -o ./$(BINS)/server ./source/server/main.c $(OBJS)/*.o
+
+	@echo "   done"
+
+test: setup compile
+	@echo -n "Linking test binaries..."
 
 # Link test executables.
-	@$(CC) $(CFLAGS) -o ./$(BINS)/test_queue ./test/test_queue.c -lcunit
+	@$(CC) $(CFLAGS) -o ./$(BINS)/test_queue ./test/test_queue.c -lcunit $(OBJS)/*.o
 
 	@echo "   done"
 

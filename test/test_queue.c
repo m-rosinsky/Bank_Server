@@ -10,16 +10,115 @@
 
 #include <stdio.h>
 
+#include "../source/common/queue.h"
+
 /*!
  * @brief This function tests the queue_create function.
- *
- * @return No return value expected.
  */
 void
 test_queue_create (void)
 {
-    CU_ASSERT_EQUAL(0, 1);
+    queue_t * p_q = queue_create();
+    CU_ASSERT_PTR_NOT_NULL(p_q);
+
+    if (NULL != p_q)
+    {
+        queue_destroy(p_q);
+        p_q = NULL;
+    }
     return;
+}
+
+/*!
+ * @brief This function tests the queue_enq function.
+ */
+void
+test_queue_enq (void)
+{
+    queue_t * p_q = queue_create();
+    CU_ASSERT_PTR_NOT_NULL(p_q);
+    if (NULL == p_q)
+    {
+        goto EXIT;
+    }
+
+    // Test enqueue with NULL as the queue context.
+    int nums[5] = {1,2,3,4,5};
+    int result = queue_enq(NULL, nums + 0);
+    CU_ASSERT_EQUAL(-1, result);
+
+    // Test enqueue with NULL as the data.
+    result = queue_enq(p_q, NULL);
+    CU_ASSERT_EQUAL(-1, result);
+
+    // Test enqueue with success.
+    for (size_t i = 0; i < 5; ++i)
+    {
+        result = queue_enq(p_q, nums + i);
+        CU_ASSERT_EQUAL(0, result);
+        CU_ASSERT_EQUAL(i+1, p_q->size);
+    }
+
+    EXIT:
+        // Destroy queue.
+        if (NULL != p_q)
+        {
+            queue_destroy(p_q);
+            p_q = NULL;
+        }
+        return;
+}
+
+/*!
+ * @brief This function tests the queue_deq function.
+ */
+void
+test_queue_deq (void)
+{
+    queue_t * p_q = queue_create();
+    CU_ASSERT_PTR_NOT_NULL(p_q);
+    if (NULL == p_q)
+    {
+        goto EXIT;
+    }
+
+    // Test dequeue with NULL parameter.
+    int * p_i = NULL;
+    p_i = queue_deq(NULL);
+    CU_ASSERT_PTR_NULL(p_i);
+
+    // Enqueue with success.
+    int result = -1;
+    int nums[5] = {1,2,3,4,5};
+    for (size_t i = 0; i < 5; ++i)
+    {
+        result = queue_enq(p_q, nums + i);
+        CU_ASSERT_EQUAL(0, result);
+        CU_ASSERT_EQUAL(i+1, p_q->size);
+    }
+
+    // Test dequeue.
+    for (size_t i = 0; i < 5; ++i)
+    {
+        p_i = queue_deq(p_q);
+        CU_ASSERT_PTR_NOT_NULL(p_i);
+        if (NULL == p_i)
+        {
+            goto EXIT;
+        }
+
+        // Test value of p_i.
+        CU_ASSERT_EQUAL(*p_i, i + 1);
+    }
+
+    EXIT:
+        // Destroy queue.
+        if (NULL != p_q)
+        {
+            queue_destroy(p_q);
+            p_q = NULL;
+        }
+        return;
 }
 
 int
@@ -38,6 +137,8 @@ main ()
     CU_TestInfo tests[] =
     {
         {"queue_create test", test_queue_create},
+        {"queue_enq test", test_queue_enq},
+        {"queue_deq test", test_queue_deq},
         CU_TEST_INFO_NULL,
     };
 
