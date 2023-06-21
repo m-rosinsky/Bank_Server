@@ -40,7 +40,7 @@ jobs:
               run: |
                 echo "Building project..."
                 make
-                make tests
+                make test
 
             # Step 4. Run tests.
             - name: Test
