@@ -25,8 +25,11 @@ compile: setup
 link: setup compile
 	@echo -n "Linking binaries..."
 
-# Link server executable
+# Link server executable.
 	@$(CC) $(CFLAGS) -o ./$(BINS)/server ./source/server/main.c
+
+# Link test executables.
+	@$(CC) $(CFLAGS) -o ./$(BINS)/test_queue ./test/test_queue.c -lcunit
 
 	@echo "   done"
 
