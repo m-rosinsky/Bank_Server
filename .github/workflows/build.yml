@@ -39,8 +39,10 @@ jobs:
             - name: Build
               run: |
                 echo "Building server..."
+                echo ""
                 make
                 echo "Building test binaries..."
+                echo ""
                 make test
 
             # Step 4. Run tests.
