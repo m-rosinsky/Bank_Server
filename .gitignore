@@ -54,3 +54,6 @@ dkms.conf
 
 # Github auth tokens
 tok
+
+# vscode settings
+.vscode
