@@ -22,6 +22,7 @@ compile: setup
 	
 # Compile common sources.
 	@$(CC) $(CFLAGS) -o ./$(OBJS)/queue.o -c ./source/common/queue.c
+	@$(CC) $(CFLAGS) -o ./$(OBJS)/threadpool.o -c ./source/common/threadpool.c
 
 	@echo "   done"
 
@@ -38,6 +39,7 @@ test: setup compile
 
 # Link test executables.
 	@$(CC) $(CFLAGS) -o ./$(BINS)/test_queue ./test/test_queue.c -lcunit $(OBJS)/*.o
+	@$(CC) $(CFLAGS) -o ./$(BINS)/test_threadpool ./test/test_threadpool.c -lcunit $(OBJS)/*.o
 
 	@echo "   done"
 

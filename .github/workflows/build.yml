@@ -49,6 +49,7 @@ jobs:
               run: |
                 echo "Running tests"
                 ./bins/test_queue
+                ./bins/test_threadpool
 
             # Step 5. Run Valgrind
             - name: Valgrind
@@ -56,3 +57,4 @@ jobs:
               run: |
                 echo "Running valgrind memory checker"
                 valgrind --leak-check=full ./bins/test_queue
+                valgrind --leak-check=full ./bins/test_threadpool
