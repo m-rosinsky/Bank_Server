@@ -24,6 +24,9 @@ compile: setup
 	@$(CC) $(CFLAGS) -o ./$(OBJS)/queue.o -c ./source/common/queue.c
 	@$(CC) $(CFLAGS) -o ./$(OBJS)/threadpool.o -c ./source/common/threadpool.c
 
+# Compile server sources.
+	@$(CC) $(CFLAGS) -o ./$(OBJS)/user_db.o -c ./source/server/user_db.c
+
 	@echo "   done"
 
 link: setup compile
