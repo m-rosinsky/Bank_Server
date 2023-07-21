@@ -47,7 +47,7 @@ typedef struct _user_db_entry
 typedef struct _user_db
 {
     user_db_entry_t p_entries[USER_DB_MAX_USERS];
-    size_t num_users;
+    int num_users;
 } user_db_t;
 
 /*!
@@ -67,6 +67,30 @@ user_db_create (void);
  */
 void
 user_db_destroy (user_db_t * p_db);
+
+
+/*!
+ * @brief This function authenticates an existing user, given
+ *          a username and password.
+ *
+ *          If the authentication was successful, a new SID is
+ *              generated for the user entry.
+ *
+ * @param[in/out] p_db The database context.
+ * @param[in] p_uname The username to authenticate.
+ * @param[in] p_pword The password to authenticate.
+ * @param[out] p_sid The new sid generated, 0 on failure.
+ *
+ * @return 0 on success,
+ *          1 on user not found,
+ *          2 on password invalid,
+ *          3 on generic failure.
+ */
+int
+user_db_auth (user_db_t * p_db,
+              const char * p_uname,
+              const char * p_pword,
+              uint32_t * p_sid);
 
 #endif // SERVER_USER_DB_H
 

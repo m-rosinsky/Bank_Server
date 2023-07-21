@@ -19,6 +19,10 @@
 #define USER_DB_UNAME_MAX 30
 #define USER_DB_PWORD_MAX 30
 
+// Bounds of SID values.
+#define USER_DB_SID_MIN 0x00000001
+#define USER_DB_SID_MAX 0xFFFFFFFE
+
 #endif // SERVER_CONFIG_H
 
 /***   end of file   ***/

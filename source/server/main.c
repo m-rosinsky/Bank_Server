@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include "user_db.h"
 
@@ -22,6 +23,17 @@ main ()
     if (NULL == p_db)
     {
         printf("create\n");
+        return 1;
+    }
+
+    // Perform auth with non-existant username.
+    char * p_uname = "user1";
+    char * p_pword = "password";
+    uint32_t sid = 0;
+
+    if (1 != user_db_auth(p_db, p_uname, p_pword, &sid))
+    {
+        printf("auth no-exist\n");
         return 1;
     }
 
