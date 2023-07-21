@@ -57,3 +57,7 @@ tok
 
 # vscode settings
 .vscode
+
+# Devcontainer files
+Dockerfile
+*devcontainer*
