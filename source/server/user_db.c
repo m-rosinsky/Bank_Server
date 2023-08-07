@@ -20,6 +20,9 @@
 static int
 user_db_find (const user_db_t * p_db, const char * p_uname);
 
+static int
+user_db_find_sid (const user_db_t * p_db, const uint32_t sid);
+
 static uint32_t
 gen_sid (user_db_t * p_db, const int user_idx);
 
@@ -97,6 +100,9 @@ user_db_auth (user_db_t * p_db,
         goto EXIT;
     }
 
+    // Set sid to zero for fail case.
+    *p_sid = 0;
+
     // Perform a search through the database for an entry that
     // matches the username.
     int user_idx = user_db_find(p_db, p_uname);
@@ -120,6 +126,9 @@ user_db_auth (user_db_t * p_db,
 
     // User successfully authenticated, generate new SID.
     uint32_t new_sid = gen_sid(p_db, user_idx);
+
+    // Assign sid to user entry and to out parameter.
+    p_db->p_entries[user_idx].sid = new_sid;
     *p_sid = new_sid;
 
     // Update SID generation time for user entry.
@@ -133,7 +142,7 @@ user_db_auth (user_db_t * p_db,
 }
 
 /*!
- * @brief This function adds a new user entry to the database.
+ * @brief This function adds a new user entry to a database.
  *
  * @param[in/out] p_db The database context.
  * @param[in] p_uname The username to add.
@@ -211,6 +220,55 @@ user_db_add_user (user_db_t * p_db,
         return status;
 }
 
+/*!
+ * @brief This function removes a user with a given SID.
+ *
+ *          The SID must be valid.
+ * 
+ * @param[in/out] p_db The database context.
+ * @param[in] sid The SID of the user to delete.
+ * 
+ * @return USER_DB_RM_* response code.
+ */
+uint8_t
+user_db_rm_user (user_db_t * p_db, const uint32_t sid)
+{
+    uint8_t status = USER_DB_RM_GENFAIL;
+    if ((NULL == p_db) ||
+        (0 == sid))
+    {
+        goto EXIT;
+    }
+
+    // Find an entry with the given SID. This also validates expiration.
+    int user_idx = user_db_find_sid(p_db, sid);
+    if (-1 == user_idx)
+    {
+        status = USER_DB_RM_SID_INVAL;
+        goto EXIT;
+    }
+
+    // SID is valid, remove associated user entry.
+    memset(&(p_db->p_entries[user_idx]), '\0', sizeof(user_db_entry_t));
+
+    // Push all entries after the removed entry forward one.
+    for (int idx = user_idx; idx < p_db->num_users; ++idx)
+    {
+        memcpy(&(p_db->p_entries[idx]),
+               &(p_db->p_entries[idx + 1]),
+               sizeof(user_db_entry_t));
+    }
+
+    // Decrement the number of users.
+    p_db->num_users--;
+
+    // Assign success.
+    status = USER_DB_RM_SUCCESS;
+
+    EXIT:
+        return status;
+}
+
 /******************************************************************************/
 /*!
  * @brief Static helper function implementations.
@@ -246,6 +304,45 @@ user_db_find (const user_db_t * p_db, const char * p_uname)
             (0 == strcmp(p_uname, p_db->p_entries[idx].p_uname)))
         {
             // Entry was found with matching username.
+            user_idx = idx;
+            goto EXIT;
+        }
+    }
+
+    EXIT:
+        return user_idx;
+}
+
+/*!
+ * @brief This function searches a database context to find an entry
+ *          with a provided SID.
+ * 
+ *          If the SID is not found, or is expired, this returns not found.
+ * 
+ * @param[in] p_db The database context.
+ * @param[in] sid The SID to find.
+ * 
+ * @return Index in the database for the user entry. -1 if not found.
+ */
+static int
+user_db_find_sid (const user_db_t * p_db, const uint32_t sid)
+{
+    int user_idx = -1;
+    if (NULL == p_db)
+    {
+        goto EXIT;
+    }
+
+    // Get current time.
+    time_t cur_time = time(NULL);
+
+    // Perform search.
+    for (int idx = 0; idx < p_db->num_users; ++idx)
+    {
+        // If sid matches and is not expired.
+        if ((p_db->p_entries[idx].sid == sid) &&
+            (USER_DB_VALID_SID_TIME >= (cur_time - p_db->p_entries[idx].sid_time)))
+        {
             user_idx = idx;
             goto EXIT;
         }

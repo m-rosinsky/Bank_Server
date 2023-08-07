@@ -90,7 +90,7 @@ user_db_auth (user_db_t * p_db,
               uint32_t * p_sid);
 
 /*!
- * @brief This function adds a new user entry to the database.
+ * @brief This function adds a new user entry to a database.
  *
  * @param[in/out] p_db The database context.
  * @param[in] p_uname The username to add.
@@ -102,6 +102,19 @@ uint8_t
 user_db_add_user (user_db_t * p_db,
                   const char * p_uname,
                   const char * p_pword);
+
+/*!
+ * @brief This function removes a user with a given SID.
+ *
+ *          The SID must be valid.
+ * 
+ * @param[in/out] p_db The database context.
+ * @param[in] sid The SID of the user to delete.
+ * 
+ * @return USER_DB_RM_* response code.
+ */
+uint8_t
+user_db_rm_user (user_db_t * p_db, const uint32_t sid);
 
 #endif // SERVER_USER_DB_H
 

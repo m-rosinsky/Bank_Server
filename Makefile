@@ -43,6 +43,7 @@ test: setup compile
 # Link test executables.
 	@$(CC) $(CFLAGS) -o ./$(BINS)/test_queue ./test/test_queue.c -lcunit $(OBJS)/*.o
 	@$(CC) $(CFLAGS) -o ./$(BINS)/test_threadpool ./test/test_threadpool.c -lcunit $(OBJS)/*.o
+	@$(CC) $(CFLAGS) -o ./$(BINS)/test_user_db ./test/test_user_db.c -lcunit $(OBJS)/*.o
 
 	@echo "   done"
 

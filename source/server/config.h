@@ -22,6 +22,9 @@
 #define USER_DB_PWORD_MIN 5
 #define USER_DB_PWORD_MAX 30
 
+// The number of seconds a SID is valid for.
+#define USER_DB_VALID_SID_TIME  5 * 60 // 5 minutes.
+
 // Bounds of SID values.
 #define USER_DB_SID_MIN 0x00000001
 #define USER_DB_SID_MAX 0xFFFFFFFE
@@ -38,6 +41,11 @@
 #define USER_DB_ADD_BAD_PASS    0xF2
 #define USER_DB_ADD_DB_FULL     0xF3
 #define USER_DB_ADD_GENFAIL     0xFF
+
+// User rm response codes (delete).
+#define USER_DB_RM_SUCCESS      0xA0
+#define USER_DB_RM_SID_INVAL    0xF0
+#define USER_DB_RM_GENFAIL      0xFF
 
 #endif // SERVER_CONFIG_H
 

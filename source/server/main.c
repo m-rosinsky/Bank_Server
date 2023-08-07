@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "user_db.h"
 #include "config.h"
@@ -44,11 +45,12 @@ display_user_db (user_db_t * p_db)
 int
 main ()
 {
+    int ret_val = 1;
     user_db_t * p_db = user_db_create();
     if (NULL == p_db)
     {
         printf("create\n");
-        return 1;
+        goto EXIT;
     }
 
     uint8_t status = 0;
@@ -60,7 +62,7 @@ main ()
     if (USER_DB_ADD_SUCCESS != status)
     {
         printf("add user1 (%x)\n", status);
-        return 1;
+        goto EXIT;
     }
 
     // Add duplicate user.
@@ -68,7 +70,7 @@ main ()
     if (USER_DB_ADD_USER_EX != status)
     {
         printf("add dup (%x)\n", status);
-        return 1;
+        goto EXIT;
     }
 
     // Add second user.
@@ -78,7 +80,7 @@ main ()
     if (USER_DB_ADD_SUCCESS != status)
     {
         printf("add user2 (%x)\n", status);
-        return 1;
+        goto EXIT;
     }
 
     // Add user with invalid password (too short).
@@ -88,7 +90,7 @@ main ()
     if (USER_DB_ADD_BAD_PASS != status)
     {
         printf("add user3 (%x)\n", status);
-        return 1;
+        goto EXIT;
     }
 
     // Add user with invalid password (too long).
@@ -100,15 +102,38 @@ main ()
     if (USER_DB_ADD_BAD_PASS != status)
     {
         printf("add user4 (%x)\n", status);
-        return 1;
+        goto EXIT;
     }
+
+    // Login as first user.
+    uint32_t sid = 0;
+    status = user_db_auth(p_db, p_uname1, p_pword1, &sid);
+    if (USER_DB_LOGIN_SUCCESS != status)
+    {
+        printf("login user1 (%x)\n", status);
+        goto EXIT;
+    }
+    printf("Logged in as user '%s' with SID %u\n", p_uname1, sid);
 
     display_user_db(p_db);
 
-    user_db_destroy(p_db);
+    // Delete user1.
+    status = user_db_rm_user(p_db, sid);
+    if (USER_DB_RM_SUCCESS != status)
+    {
+        printf("delete user1 (%x)\n", status);
+        goto EXIT;
+    }
+    printf("Deleted user '%s'\n", p_uname1);
 
-    printf("success\n");
-    return 0;
+    display_user_db(p_db);
+
+    ret_val = 0;
+
+    EXIT:
+        user_db_destroy(p_db);
+        printf("EXITED: %d\n", ret_val);
+        return ret_val;
 }
 
 /***   end of file   ***/
