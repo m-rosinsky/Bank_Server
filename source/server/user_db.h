@@ -81,16 +81,27 @@ user_db_destroy (user_db_t * p_db);
  * @param[in] p_pword The password to authenticate.
  * @param[out] p_sid The new sid generated, 0 on failure.
  *
- * @return 0 on success,
- *          1 on user not found,
- *          2 on password invalid,
- *          3 on generic failure.
+ * @return USER_DB_LOGIN_* response code.
  */
-int
+uint8_t
 user_db_auth (user_db_t * p_db,
               const char * p_uname,
               const char * p_pword,
               uint32_t * p_sid);
+
+/*!
+ * @brief This function adds a new user entry to the database.
+ *
+ * @param[in/out] p_db The database context.
+ * @param[in] p_uname The username to add.
+ * @param[in] p_pword The password for the entry.
+ *
+ * @return USER_DB_ADD_* response code.
+ */
+uint8_t
+user_db_add_user (user_db_t * p_db,
+                  const char * p_uname,
+                  const char * p_pword);
 
 #endif // SERVER_USER_DB_H
 

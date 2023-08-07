@@ -80,18 +80,15 @@ user_db_destroy (user_db_t * p_db)
  * @param[in] p_pword The password to authenticate.
  * @param[out] p_sid The new sid generated, 0 on failure.
  *
- * @return 0 on success,
- *          1 on user not found,
- *          2 on password invalid,
- *          3 on generic failure.
+ * @return USER_DB_LOGIN_* response code.
  */
-int
+uint8_t
 user_db_auth (user_db_t * p_db,
               const char * p_uname,
               const char * p_pword,
               uint32_t * p_sid)
 {
-    int status = 3; // Generic failure.
+    uint8_t status = USER_DB_LOGIN_GENFAIL;
     if ((NULL == p_db) ||
         (NULL == p_uname) ||
         (NULL == p_pword) ||
@@ -106,7 +103,7 @@ user_db_auth (user_db_t * p_db,
     if (-1 == user_idx)
     {
         // User was not found, return error.
-        status = 1;
+        status = USER_DB_LOGIN_USER_NF;
         goto EXIT;
     }
 
@@ -117,7 +114,7 @@ user_db_auth (user_db_t * p_db,
         (0 != strcmp(p_pword, p_db->p_entries[user_idx].p_pword)))
     {
         // Password did not match database entry.
-        status = 2;
+        status = USER_DB_LOGIN_BAD_PASS;
         goto EXIT;
     }
 
@@ -125,8 +122,90 @@ user_db_auth (user_db_t * p_db,
     uint32_t new_sid = gen_sid(p_db, user_idx);
     *p_sid = new_sid;
 
+    // Update SID generation time for user entry.
+    p_db->p_entries[user_idx].sid_time = time(NULL);
+
     // Set success status.
-    status = 0;
+    status = USER_DB_LOGIN_SUCCESS;
+
+    EXIT:
+        return status;
+}
+
+/*!
+ * @brief This function adds a new user entry to the database.
+ *
+ * @param[in/out] p_db The database context.
+ * @param[in] p_uname The username to add.
+ * @param[in] p_pword The password for the entry.
+ *
+ * @return USER_DB_ADD_* response code.
+ */
+uint8_t
+user_db_add_user (user_db_t * p_db,
+                  const char * p_uname,
+                  const char * p_pword)
+{
+    uint8_t status = USER_DB_ADD_GENFAIL;
+    if ((NULL == p_db) ||
+        (NULL == p_uname) ||
+        (NULL == p_pword))
+    {
+        goto EXIT;
+    }
+
+    // Perform a search through the database for an entry that
+    // matches the username.
+    int user_idx = user_db_find(p_db, p_uname);
+    if (-1 != user_idx)
+    {
+        // User was found, return error.
+        status = USER_DB_ADD_USER_EX;
+        goto EXIT;
+    }
+
+    // Validate the lengths of the username and passwords.
+    size_t uname_len = strnlen(p_uname, USER_DB_UNAME_MAX);
+    if ((uname_len < USER_DB_UNAME_MIN) ||
+        ((USER_DB_UNAME_MAX == uname_len) &&
+         ('\0' != p_uname[uname_len])))
+    {
+        status = USER_DB_ADD_BAD_PASS;
+        goto EXIT;
+    }
+
+    size_t pword_len = strnlen(p_pword, USER_DB_PWORD_MAX);
+    if ((pword_len < USER_DB_PWORD_MIN) ||
+        ((USER_DB_PWORD_MAX == pword_len) &&
+         ('\0' != p_pword[pword_len])))
+    {
+        status = USER_DB_ADD_BAD_PASS;
+        goto EXIT;
+    }
+
+    // Get the index for the new entry, which is always the last one
+    // in the database.
+    size_t new_user_idx = p_db->num_users;
+    
+    // Check if database is full.
+    if (USER_DB_MAX_USERS <= new_user_idx)
+    {
+        status = USER_DB_ADD_DB_FULL;
+        goto EXIT;
+    }
+
+    // Assign fields of user entry.
+    strncpy(p_db->p_entries[new_user_idx].p_uname, p_uname, uname_len);
+    strncpy(p_db->p_entries[new_user_idx].p_pword, p_pword, pword_len);
+    p_db->p_entries[new_user_idx].balance = 0;
+    p_db->p_entries[new_user_idx].sid = 0;
+    p_db->p_entries[new_user_idx].sid_time = 0;
+
+    // Increment number of users.
+    p_db->num_users++;
+
+    // Assign success.
+    status = USER_DB_ADD_SUCCESS;
 
     EXIT:
         return status;
