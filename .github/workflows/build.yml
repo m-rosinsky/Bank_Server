@@ -59,3 +59,4 @@ jobs:
                 echo "Running valgrind memory checker"
                 valgrind --leak-check=full ./bins/test_queue
                 valgrind --leak-check=full ./bins/test_threadpool
+                valgrind --leak-check=full ./bins/test_user_db
